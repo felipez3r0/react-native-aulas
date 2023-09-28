@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native"
-import { Button, Divider, ListItem, Text } from "@rneui/themed"
+import { Avatar, Button, Divider, ListItem, Text } from "@rneui/themed"
 import { ListItemContent } from "@rneui/base/dist/ListItem/ListItem.Content"
 import { ListItemTitle } from "@rneui/base/dist/ListItem/ListItem.Title"
 
@@ -20,9 +20,17 @@ export default function Home({ navigation }) {
             <Text h1>Home</Text>
             <Divider />
             <Text h3>Produtos</Text>
+            {
+                produtos.length <= 0 && (
+                    <Text>Nenhum produto encontrado</Text>
+                )
+            }            
             {produtos.map((produto) =>
             (
-                <ListItem key={produto.id}>
+                <ListItem key={produto.id} onPress={()=>{
+                    navigation.navigate("Produto",{produto})
+                }}>
+                    <Avatar source={{uri: produto.thumbnail}} />
                     <ListItemContent>
                         <ListItemTitle>
                             <Text>{produto.title}</Text>
