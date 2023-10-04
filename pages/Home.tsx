@@ -6,18 +6,32 @@ import { ListItemTitle } from "@rneui/base/dist/ListItem/ListItem.Title"
 import { useEffect, useState } from "react"
 import axiosConfig from "../config/axios"
 
+import * as SecureStore from 'expo-secure-store'
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
 export default function Home({ navigation }) {
     const [produtos, setProdutos] = useState([])
+    const [nomeUsuario, setNomeUsuario] = useState('')
 
     useEffect(() => {
         axiosConfig.get('/products').then((response) => {
             setProdutos(response.data.products)
         })
+        AsyncStorage.getItem('user').then((user) => {
+            setNomeUsuario(user)
+        })
     }, [])
+
+    async function sair() {
+        await SecureStore.deleteItemAsync('token')
+        await AsyncStorage.removeItem('user')
+        navigation.navigate('Login')
+    }
 
     return (
         <ScrollView>
             <Text h1>Home</Text>
+            <Text>Olá {nomeUsuario}</Text>
             <Divider />
             <Text h3>Produtos</Text>
             {
@@ -41,9 +55,7 @@ export default function Home({ navigation }) {
             )}
 
             <Divider />
-            <Button title='Sair' onPress={
-                () => navigation.navigate('Login')
-            } />
+            <Button title='Sair' onPress={sair} />
         </ScrollView>
     )
 }
