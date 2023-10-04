@@ -1,8 +1,11 @@
 import { StatusBar } from 'expo-status-bar'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { Text, Button, Input } from '@rneui/themed'
+
+import * as SecureStore from 'expo-secure-store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login({navigation}) {
   const [resultado, setResultado] = useState('Digite seus dados')
@@ -16,12 +19,23 @@ export default function Login({navigation}) {
     }
 
     if(login == 'admin' && senha == '1234'){
+      SecureStore.setItemAsync('token', '123456')
+      AsyncStorage.setItem('user','Administrador')
+
       setResultado('Login com sucesso!')
       navigation.navigate('Home')
     } else {
       setResultado('Login ou senha inválidos!')
     }
   }
+
+  useEffect(() => {
+    SecureStore.getItemAsync('token').then((token) => {
+      if(token != null){
+        navigation.navigate('Home')
+      }
+    })
+  },[])
 
   return (
     <View style={styles.container}>
